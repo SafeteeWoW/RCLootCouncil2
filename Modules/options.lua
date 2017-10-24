@@ -144,8 +144,22 @@ function addon:OptionsTable()
 									},
 								},
 							},
-							lootHistoryOptions = {
+							frameOptions = {
 								order = 5,
+								type = "group",
+								name = L["Frame options"],
+								inline = true,
+								args = {
+									showSpecIcon = {
+										order = 1,
+										name = L["Show Spec Icon"],
+										desc = L["show_spec_icon_desc"],
+										type = "toggle",
+									}
+								}
+							},
+							lootHistoryOptions = {
+								order = 6,
 								type = "group",
 								name = L["Loot History"],
 								inline = true,
@@ -739,18 +753,8 @@ function addon:OptionsTable()
 									},
 									outputDesc = {
 										order = 2,
-										name = function()
-											local text = L["announce_awards_desc2"]
-											local sorted = {}
-											for _, desc in pairs(RCLootCouncilML.awardStringsDesc) do
-												table.insert(sorted, desc)
-											end
-											table.sort(sorted)
-											for _, desc in ipairs(sorted) do
-												text = text..desc.." "
-											end
-											return text
-										end,
+										fontSize = "medium",
+										name = L["announce_awards_desc2"].."\n"..table.concat(RCLootCouncilML.awardStringsDesc, "\n"),
 										type = "description",
 										hidden = function() return not self.db.profile.announceAward end,
 									},
@@ -806,18 +810,8 @@ function addon:OptionsTable()
 									},
 									announceItemStringDesc ={
 										order = 4,
-										name = function()
-											local text = L["announce_item_string_desc"]
-											local sorted = {}
-											for _, desc in pairs(RCLootCouncilML.announceItemStringsDesc) do
-												table.insert(sorted, desc)
-											end
-											table.sort(sorted)
-											for _, desc in ipairs(sorted) do
-												text = text..desc.." "
-											end
-											return text
-										end,
+										fontSize = "medium",
+										name = L["announce_item_string_desc"].."\n"..table.concat(RCLootCouncilML.announceItemStringsDesc, "\n"),
 										type = "description",
 										hidden = function() return not self.db.profile.announceItems end,
 									},
