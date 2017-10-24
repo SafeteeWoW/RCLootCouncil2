@@ -147,6 +147,12 @@ function RCSessionFrame:GetFrame()
 				addon:Print(L["Please wait a few seconds until all data has been synchronized."])
 				return addon:Debug("Data wasn't ready", addon.candidates[addon.playerName], #addon.council)
 			else
+				for s, v in ipairs(ml.lootTable) do -- Extra check: it's possible that session frame has loaded the item, but the lootTable does not.
+					if not v.link then
+						addon:Print(L["You can't start a session before all items are loaded!"])
+						return addon:Debug("Session has loaded all items, but looTable does not.", s)
+					end
+				end
 				ml:StartSession()
 			end
 		end
