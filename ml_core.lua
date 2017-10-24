@@ -54,10 +54,11 @@ end
 -- @param slotIndex Index of the lootSlot, or nil if none - either this or 'bagged' needs to be supplied
 -- @param index Index in self.lootTable, used to set data in a specific session
 function RCLootCouncilML:AddItem(item, bagged, slotIndex, index)
+	index = index or #self.lootTable + 1
 	addon:DebugLog("ML:AddItem", item, bagged, slotIndex, index)
 	local name, link, rarity, ilvl, iMinLevel, type, subType, iStackCount, equipLoc, texture = GetItemInfo(item)
 	local itemID = link and addon:GetItemIDFromLink(link)
-	self.lootTable[index or #self.lootTable + 1] = { -- We want to reserve the index even if we haven't fully loaded the item
+	self.lootTable[index] = { -- We want to reserve the index even if we haven't fully loaded the item
 		["bagged"]		= bagged,
 		["lootSlot"]	= slotIndex,
 		["awarded"]		= false,
@@ -74,24 +75,24 @@ function RCLootCouncilML:AddItem(item, bagged, slotIndex, index)
 	}
 
 	-- Calculate the equipment slots of the token
-	local tokenSlot = self.lootTable[#self.lootTable].token
+	local tokenSlot = self.lootTable[index].token
 	if tokenSlot then
 		if tokenSlot == "Trinket" then
-			self.lootTable[#self.lootTable].equipLoc = INVTYPE_TRINKET
+			self.lootTable[index].equipLoc = INVTYPE_TRINKET
 		else
 			for loc, slot in pairs(addon.INVTYPE_Slots) do
 				if slot == tokenSlot then
-					self.lootTable[#self.lootTable].equipLoc = loc
+					self.lootTable[index].equipLoc = loc
 				end
 			end
 		end
 	end
 		-- Item isn't properly loaded, so update the data in 1 sec (Should only happen with /rc test)
 	if not name then
-		self:ScheduleTimer("Timer", 1, "AddItem", item, bagged, slotIndex, index or #self.lootTable)
+		self:ScheduleTimer("Timer", 1, "AddItem", item, bagged, slotIndex, index)
 		addon:Debug("Started timer:", "AddItem", "for", item)
 	else
-		addon:SendMessage("RCMLAddItem", item, index or #self.lootTable)
+		addon:SendMessage("RCMLAddItem", item, index)
 	end
 end
 
