@@ -41,6 +41,7 @@ RCLootCouncil = LibStub("AceAddon-3.0"):NewAddon("RCLootCouncil", "AceConsole-3.
 local LibDialog = LibStub("LibDialog-1.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("RCLootCouncil")
 local lwin = LibStub("LibWindow-1.1")
+local libc = LibStub:GetLibrary("LibCompress")
 
 RCLootCouncil:SetDefaultModuleState(false)
 
@@ -658,6 +659,8 @@ function RCLootCouncil:OnCommReceived(prefix, serializedMsg, distri, sender)
 	if prefix == "RCLootCouncil" then
 		self:DebugLog("Comm received:" .. serializedMsg, "from:", sender, "distri:", distri)
 		-- data is always a table to be unpacked
+		print("Msg len: ", serializedMsg:len())
+		print("compressed msg len: ", libc:Compress(serializedMsg):len())
 		local test, command, data = self:Deserialize(serializedMsg)
 		-- NOTE: Since I can't find a better way to do this, all xrealms comms is routed through here
 		--			to make sure they get delivered properly. Must be included in every OnCommReceived() function.
