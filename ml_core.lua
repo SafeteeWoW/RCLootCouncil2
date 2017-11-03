@@ -596,7 +596,7 @@ function RCLootCouncilML:Award(session, winner, response, reason)
 		tinsert(self.lootInBags, self.lootTable[session].link) -- and store data
 
 		if self.running then
-			addon:SendCommand("group", "awardLater", session)
+			addon:SendCommand("group", "awardLater", session, self.playerName)
 		end
 		return awardFailed(session, winner, "bagged") -- Item hasn't been awarded
 	end
