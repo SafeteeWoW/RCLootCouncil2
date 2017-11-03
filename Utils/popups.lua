@@ -104,6 +104,28 @@ LibDialog:Register("RCLOOTCOUNCIL_CONFIRM_AWARD", {
 	show_while_dead = true,
 })
 
+LibDialog:Register("RCLOOTCOUNCIL_CONFIRM_AWARD_LATER", {
+   text = "something_went_wrong",
+   icon = "",
+   on_show = function(frame, data)
+      frame:SetFrameStrata("FULLSCREEN")
+      frame.text:SetText(format(L["Are you sure you want to award #item later?"], data.link))
+      frame.icon:SetTexture(RCLootCouncilML.lootTable[data.session].texture)
+   end,
+   buttons = {
+      {  text = _G.YES,
+         on_click = function(frame, data)
+            RCLootCouncilML:Award(data.session)
+            if addon.testMode and RCLootCouncilML:HasAllItemsBeenAwarded() then RCLootCouncilML:EndSession() end
+         end
+      },
+      {  text = _G.NO,
+      },
+   },
+   hide_on_escape = true,
+   show_while_dead = true,
+})
+
 -- Note button (lootframe)
 LibDialog:Register("RCLOOTCOUNCIL_LOOTFRAME_NOTE", {
 	text = L["Enter your note:"],

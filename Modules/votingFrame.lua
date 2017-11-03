@@ -1101,6 +1101,12 @@ do
 				value = "AWARD_FOR",
 				notCheckable = true,
 				hasArrow = true,
+			},{ -- 5 Award Later
+				text = L["Award Later"],
+				notCheckable = true,
+				func = function(name, data)
+					LibDialog:Spawn("RCLOOTCOUNCIL_CONFIRM_AWARD_LATER", RCVotingFrame:GetAwardPopupData(session, name, data))
+				end
 			},{ -- 5 Spacer
 				text = "",
 				notCheckable = true,
