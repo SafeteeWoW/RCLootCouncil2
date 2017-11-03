@@ -207,6 +207,7 @@ L["ignore_list_desc"] = "Items RCLootCouncil is ignoring. Click on a item to rem
 L["ignore_options_desc"] = "Control which items RCLootCouncil should ignore. If you add an item that isn't cached, you need switch to another tab and back before you'll see it in the list."
 L["Item received and added from 'player'"] = "Item received and added from %s."
 L["Item was awarded to"] = true
+L["Item will be awarded later"] = true
 L["Item"] = true
 L["Item(s) replaced:"] = true
 L["Items under consideration:"] = true

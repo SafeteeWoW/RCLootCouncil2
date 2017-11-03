@@ -179,12 +179,23 @@ function RCVotingFrame:OnCommReceived(prefix, serializedMsg, distri, sender)
 				local s, winner = unpack(data)
 				if not lootTable[s] then return end -- We might not have lootTable - e.g. if we just reloaded
 				lootTable[s].awarded = winner
+				lootTable[s].awardLater = false
 				if addon.isMasterLooter and session ~= #lootTable then -- ML should move to the next item on award
 					self:SwitchSession(session + 1)
 				else
 					self:SwitchSession(session) -- Use switch session to update awardstring
 				end
 
+			elseif command == "awardLater" and addon:UnitIsUnit(sender, addon.masterLooter) then
+				local s, ml = unpack(data)
+				if not lootTable[s] then return end -- We might not have lootTable - e.g. if we just reloaded
+				lootTable[s].awarded = false
+				lootTable[s].awardLater = ml
+				if addon.isMasterLooter and session ~= #lootTable then -- ML should move to the next item on award
+					self:SwitchSession(session + 1)
+				else
+					self:SwitchSession(session) -- Use switch session to update awardstring
+				end
 			elseif command == "offline_timer" and addon:UnitIsUnit(sender, addon.masterLooter) then
 				for i = 1, #lootTable do
 					for name in pairs(lootTable[i].candidates) do
@@ -367,6 +378,7 @@ function RCVotingFrame:Update()
 	self.frame.st:SortData()
 	-- update awardString
 	if lootTable[session] and lootTable[session].awarded then
+		self.frame.awardString:SetText(L["Item was awarded to"])
 		self.frame.awardString:Show()
 		local name = lootTable[session].awarded
 		self.frame.awardStringPlayer:SetText(addon.Ambiguate(name))
@@ -376,6 +388,11 @@ function RCVotingFrame:Update()
 		-- Hack-reuse the SetCellClassIcon function
 		addon.SetCellClassIcon(nil,self.frame.awardStringPlayer.classIcon,nil,nil,nil,nil,nil,nil,nil, lootTable[session].candidates[name].class)
 		self.frame.awardStringPlayer.classIcon:Show()
+	elseif lootTable[session] and lootTable[session].awardLater then
+		self.frame.awardString:SetText(L["Item will be awarded later"])
+		self.frame.awardString:Show()
+		self.frame.awardStringPlayer:Hide()
+		self.frame.awardStringPlayer.classIcon:Hide()
 	else
 		self.frame.awardString:Hide()
 		self.frame.awardStringPlayer:Hide()
