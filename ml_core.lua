@@ -507,7 +507,7 @@ end
 --@returns True if awarded successfully
 function RCLootCouncilML:Award(session, winner, response, reason)
 	addon:DebugLog("ML:Award", session, winner, response, reason)
-	if addon.testMode and winner then
+	if addon.testMode then
 		if winner then
 			addon:SendCommand("group", "awarded", session, winner)
 			addon:Print(format(L["The item would now be awarded to 'player'"], addon.Ambiguate(winner)))
@@ -517,8 +517,13 @@ function RCLootCouncilML:Award(session, winner, response, reason)
 			if self:HasAllItemsBeenAwarded() then
 				 addon:Print(L["All items has been awarded and  the loot session concluded"])
 			end
+			return awardSuccess(session, winner, "test_mode")
+		else -- Award later
+			if self.running then
+				addon:SendCommand("group", "awardLater", session, self.playerName)
+			end
+			return awardFailed(session, winner, "bagged") -- Item hasn't been awarded
 		end
-		return awardSuccess(session, winner, "test_mode")
 	end
 	if not self.lootTable[session].lootSlot and not self.lootTable[session].bagged then
 		addon:SessionError("Session "..session.." didn't have lootSlot")
@@ -593,7 +598,10 @@ function RCLootCouncilML:Award(session, winner, response, reason)
 				end
 			end
 		end
-		tinsert(self.lootInBags, self.lootTable[session].link) -- and store data
+
+		if not self.lootTable[session].bagged then
+			tinsert(self.lootInBags, self.lootTable[session].link) -- and store data
+		end
 
 		if self.running then
 			addon:SendCommand("group", "awardLater", session, self.playerName)
