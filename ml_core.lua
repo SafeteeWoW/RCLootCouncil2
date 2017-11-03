@@ -520,7 +520,7 @@ function RCLootCouncilML:Award(session, winner, response, reason)
 			return awardSuccess(session, winner, "test_mode")
 		else -- Award later
 			if self.running then
-				addon:SendCommand("group", "awardLater", session, self.playerName)
+				addon:SendCommand("group", "awardLater", session, addon.playerName)
 			end
 			return awardFailed(session, winner, "bagged") -- Item hasn't been awarded
 		end
@@ -604,7 +604,7 @@ function RCLootCouncilML:Award(session, winner, response, reason)
 		end
 
 		if self.running then
-			addon:SendCommand("group", "awardLater", session, self.playerName)
+			addon:SendCommand("group", "awardLater", session, addon.playerName)
 		end
 		return awardFailed(session, winner, "bagged") -- Item hasn't been awarded
 	end
