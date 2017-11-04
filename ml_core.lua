@@ -435,7 +435,7 @@ function RCLootCouncilML:UpdateLootSlots()
 		local item = GetLootSlotLink(i)
 		for session = 1, #self.lootTable do
 			-- Just skip if we've already awarded the item or found a fitting lootSlot
-			if not self.lootTable[session].awarded and not updatedLootSlot[session] then
+			if not self.lootTable[session].awarded and not updatedLootSlot[session] and not self.lootTable[session].awardLater then
 				if item == self.lootTable[session].link then
 					if i ~= self.lootTable[session].lootSlot then -- It has changed!
 						addon:DebugLog("lootSlot @session", session, "Was at:",self.lootTable[session].lootSlot, "is now at:", i)
@@ -519,10 +519,14 @@ function RCLootCouncilML:Award(session, winner, response, reason)
 			end
 			return awardSuccess(session, winner, "test_mode")
 		else -- Award later
+			self.lootTable[session].awardLater = addon.playerName
 			if self.running then
 				addon:SendCommand("group", "awardLater", session, addon.playerName)
+				if self:HasAllItemsBeenAwarded() then
+					addon:Print(L["All items has been awarded and  the loot session concluded"])
+				end
 			end
-			return awardFailed(session, winner, "bagged") -- Item hasn't been awarded
+			return awardFailed(session, winner, "test_mode") -- Item hasn't been awarded
 		end
 	end
 	if not self.lootTable[session].lootSlot and not self.lootTable[session].bagged then
@@ -603,6 +607,7 @@ function RCLootCouncilML:Award(session, winner, response, reason)
 			tinsert(self.lootInBags, self.lootTable[session].link) -- and store data
 		end
 
+		self.lootTable[session].awardLater = addon.playerName
 		if self.running then
 			addon:SendCommand("group", "awardLater", session, addon.playerName)
 		end
@@ -773,7 +778,7 @@ end
 function RCLootCouncilML:HasAllItemsBeenAwarded()
 	local moreItems = true
 	for i = 1, #self.lootTable do
-		if not self.lootTable[i].awarded then
+		if not self.lootTable[i].awarded and not self.lootTable[i].awardLater then
 			moreItems = false
 		end
 	end
