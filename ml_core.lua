@@ -80,7 +80,7 @@ function RCLootCouncilML:AddItem(item, bagged, slotIndex, index)
 
 		-- Item isn't properly loaded, so update the data in 1 sec (Should only happen with /rc test)
 	if not name then
-		self:ScheduleTimer("Timer", 1, "AddItem", item, bagged, slotIndex, session)
+		self:ScheduleTimer("Timer", 0, "AddItem", item, bagged, slotIndex, session)
 		addon:Debug("Started timer:", "AddItem", "for", item)
 	else
 		addon:SendMessage("RCMLAddItem", item, session)

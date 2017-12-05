@@ -92,7 +92,7 @@ function RCSessionFrame.SetCellText(rowFrame, frame, data, cols, row, realrow, c
 	if not data[realrow].link then
 		frame.text:SetText("--".._G.RETRIEVING_ITEM_INFO.."--")
 		loadingItems = true
-		RCSessionFrame:ScheduleTimer("Show", 1, ml.lootTable) -- Expect data to be available in 1 sec and then recreate the frame
+		RCSessionFrame:ScheduleTimer("Show", 0, ml.lootTable) -- Expect data to be available in 1 sec and then recreate the frame
 	else
 		frame.text:SetText(data[realrow].link)
 	end
